@@ -1,37 +1,60 @@
 from flask import Flask, request, jsonify
 from flask_restful import Resource, Api
-from sensor import SensorPresenca
-from termostato import Termostato
-from chuveiro import ChuveiroInteligente
-from tomadas import TomadasProgramaveis
+import random
 
 app = Flask(__name__)
 api = Api(app)
 
-sensor_presenca = SensorPresenca()
-termostato = Termostato()
-chuveiro_inteligente = ChuveiroInteligente()
-tomadas_programaveis = TomadasProgramaveis()
+class MonitoramentoPresenca(Resource):
+    def get(self):
+        presenca = random.choice(['hospede', 'funcionario', 'animal', 'vazio'])
+        return {'presenca': presenca}
+
+class ControleTermostato(Resource):
+    def post(self):
+        temperatura_desejada = request.json['temperatura_desejada']
+        return {'status': 'temperatura ajustada para {}'.format(temperatura_desejada)}
+
+class ControleChuveiroInteligente(Resource):
+    def post(self):
+        fluxo_desejado = request.json['fluxo_desejado']
+        temperatura_desejada = request.json['temperatura_desejada']
+        return {'status': 'fluxo e temperatura ajustados'}
+
+class ControleTomadasProgramaveis(Resource):
+    def post(self):
+        programacao = request.json['programacao']
+        return {'status': 'programação das tomadas ajustada'}
 
 class AjustarDispositivos(Resource):
     def post(self):
-        temperatura_desejada = request.json['temperatura_desejada']
-        fluxo_desejado = request.json['fluxo_desejado']
-        temperatura_agua_desejada = request.json['temperatura_agua_desejada']
-        programacao = request.json['programacao']
+        monitoramento = MonitoramentoPresenca()
+        presenca = monitoramento.get()['presenca']
 
-        presenca = sensor_presenca.verificar_presenca()
+        ajustes = {}
+        
+        if presenca == 'hospede':
+            termostato = ControleTermostato()
+            ajustes['termostato'] = termostato.post().get('status')
 
-        ajuste_termostato = termostato.ajustar_temperatura(temperatura_desejada, presenca)
-        ajuste_chuveiro = chuveiro_inteligente.ajustar_fluxo_temperatura(fluxo_desejado, temperatura_agua_desejada, presenca)
-        ajuste_tomadas = tomadas_programaveis.ajustar_programacao(programacao, presenca)
+            chuveiro = ControleChuveiroInteligente()
+            ajustes['chuveiro'] = chuveiro.post().get('status')
 
-        return {
-            'ajuste_termostato': ajuste_termostato,
-            'ajuste_chuveiro': ajuste_chuveiro,
-            'ajuste_tomadas': ajuste_tomadas
-        }
+            tomadas = ControleTomadasProgramaveis()
+            ajustes['tomadas'] = tomadas.post().get('status')
 
+        elif presenca == 'funcionario' or presenca == 'animal':
+            ajustes['status'] = "Nenhum ajuste realizado. A presença detectada é de um funcionário ou animal."
+
+        else:
+            ajustes['status'] = "Nenhum ajuste realizado. Não há presença detectada no quarto."
+
+        return ajustes
+
+api.add_resource(MonitoramentoPresenca, '/api/presenca')
+api.add_resource(ControleTermostato, '/api/termostato')
+api.add_resource(ControleChuveiroInteligente, '/api/chuveiro')
+api.add_resource(ControleTomadasProgramaveis, '/api/tomadas')
 api.add_resource(AjustarDispositivos, '/api/ajustar_dispositivos')
 
 if __name__ == '__main__':
