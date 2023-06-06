@@ -59,3 +59,4 @@ api.add_resource(AjustarDispositivos, '/api/ajustar_dispositivos')
 
 if __name__ == '__main__':
     app.run(debug=True)
+  chuveiro.py README.md sensor.py termostato.py tomadas.py
