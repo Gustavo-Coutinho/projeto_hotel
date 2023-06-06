@@ -4,3 +4,4 @@ class TomadasProgramaveis:
             return 'Programação das tomadas ajustada para os valores desejados pelo hóspede'
         else:
             return 'Programação das tomadas ajustada para os valores padrão'
+

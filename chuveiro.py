@@ -4,3 +4,4 @@ class ChuveiroInteligente:
             return 'Fluxo e temperatura ajustados para os valores desejados pelo hóspede'
         else:
             return 'Fluxo e temperatura ajustados para os valores padrão'
+

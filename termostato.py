@@ -4,3 +4,4 @@ class Termostato:
             return 'Temperatura ajustada para {}'.format(temperatura_desejada)
         else:
             return 'Temperatura ajustada para a temperatura padrão'
+
