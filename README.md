@@ -84,7 +84,7 @@ Você pode testar a API usando um cliente REST, como o [Postman](https://www.pos
    - Abra o Postman e crie uma nova requisição POST.
    - Digite a URL: `http://127.0.0.1:5000/api/ajustar_dispositivos`
    - No corpo da requisição, selecione "raw" e "JSON" como tipo.
-   - Insira o JSON: `{"presenca": "hospede", "temperatura_desejada": 22, "fluxo_desejado": 2, "temperatura_chuveiro_desejada": 35, "programacao_tomadas": "07:00-23:00"}`
+   - Insira o JSON: `{"presenca": "hospede", "temperatura_desejada": 22, "fluxo_desejado": 3, "temperatura_chuveiro_desejada": 37, "programacao": "07:00-23:30"}`
    - Clique em "Send" e verifique a resposta.
 
 Com estes passos, você pode testar todas as rotas criadas na APS usando o Postman.
